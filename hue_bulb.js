@@ -13,6 +13,7 @@ HueBulbDriver.prototype.init = function(config) {
   config
     .when('on', { allow: ['turn-off', 'toggle','blink'] })
     .when('off', { allow: ['turn-on', 'toggle','blink'] })
+    .when('blink', { allow: ['turn-on', 'toggle','blink'] })
     .map('turn-on', this.turnOn)
     .map('turn-off', this.turnOff)
     .map('toggle', this.toggle)
@@ -21,9 +22,10 @@ HueBulbDriver.prototype.init = function(config) {
 
 HueBulbDriver.prototype.blink = function(cb){
   var prevState = this.state;
+  var self = this;
   this.state = 'blink';
   this.hue.setLightState(this.data.id,{alert : 'select'},function(err){
-    this.state = prevState;
+    self.state = prevState;
     cb();
   });
 };

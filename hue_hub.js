@@ -49,30 +49,12 @@ HueHubDriver.prototype.register = function(cb) {
 
 HueHubDriver.prototype.blink = function(cb) {
   var prevState = this.state;
-  this.state = "blinking";
   var self = this;
-  function blink(group){  
-    return function(callback){
-      self.hue.setGroupLightState(group, {alert : "select"},callback);
-    }
-  }
-
-  function delay(time){
-    return function(callback){
-      setTimeout(callback,time);
-    }
-  }
-
-  async.series([
-      blink(0),
-      delay(500),
-      blink(0),
-      delay(500),
-      blink(0),
-  ],function(){
+  this.state = "blinking";
+  self.hue.setGroupLightState(0, {alert : "select"},function(){
     self.state = prevState;
+    cb();
   });
-
 };
 
 HueHubDriver.prototype.allOn = function(cb) {
