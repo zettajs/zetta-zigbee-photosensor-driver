@@ -11,11 +11,21 @@ var HueBulbDriver = module.exports = function(data,hue) {
 
 HueBulbDriver.prototype.init = function(config) {
   config
-    .when('on', { allow: ['turn-off', 'toggle'] })
-    .when('off', { allow: ['turn-on', 'toggle'] })
+    .when('on', { allow: ['turn-off', 'toggle','blink'] })
+    .when('off', { allow: ['turn-on', 'toggle','blink'] })
     .map('turn-on', this.turnOn)
     .map('turn-off', this.turnOff)
     .map('toggle', this.toggle)
+    .map('blink',this.blink);
+};
+
+HueBulbDriver.prototype.blink = function(cb){
+  var prevState = this.state;
+  this.state = 'blink';
+  this.hue.setLightState(this.data.id,{alert : 'select'},function(err){
+    this.state = prevState;
+    cb();
+  });
 };
 
 HueBulbDriver.prototype.turnOn = function(cb) {
